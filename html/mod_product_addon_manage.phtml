@@ -1,0 +1,115 @@
+{% extends "layout_default.phtml" %}
+{% set active_menu = 'products' %}
+{% block meta_title %}Product addon management{% endblock %}
+
+{% block breadcrumbs %}
+						<ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="{{ '/'|alink }}">{% trans 'Home' %}</a> 
+								<span class="icon-angle-right"></span>
+							</li>
+                             <li><a href="{{ 'product'|alink }}">{% trans 'Products' %}</a>
+                             <span class="icon-angle-right"></span></li>
+							<li>{{product.title}}</li>
+						</ul>
+{% endblock %}
+
+{% block content %}
+<div class="row-fluid">
+
+<div class="span12">
+						<!-- BEGIN CONDENSED TABLE PORTLET-->
+						<div class="portlet box yellow">
+							<div class="portlet-title">
+								<h4><i class="icon-money"></i>{% trans 'Edit product addon' %}</h4>
+							</div>
+							<div class="portlet-body">
+
+
+<form method="post" action="admin/product/addon_update" class="form-horizontal api-form save" data-api-msg="Addon updated">
+    <div class="control-group">
+           <label class="control-label">{% trans 'Status' %}</label>
+            <div class="controls">
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="status" value="enabled"{% if product.status == 'enabled' %} checked="checked"{% endif %} style="opacity: 0;"></span></div>
+                {% trans 'Enabled' %}
+            </label>
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="status" value="disabled"{% if product.status == 'disabled' %} checked="checked"{% endif %} style="opacity: 0;"></span></div>
+                {% trans 'Disabled' %}
+            </label>
+            
+            </div>
+          </div>
+          
+          <div class="control-group">
+           <label class="control-label">{% trans 'Activation' %}</label>
+            <div class="controls">
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="setup" value="after_order"{% if product.setup == 'after_order' %} checked="checked"{% endif %} style="opacity: 0;"></span></div>
+                {% trans 'After order is placed' %}
+            </label>
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="setup" value="after_payment"{% if product.setup == 'after_payment' %} checked="checked"{% endif %} style="opacity: 0;"></span></div>
+                {% trans 'After payment is received' %}
+            </label>
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="setup" value="manual"{% if product.setup == 'manual' %} checked="checked"{% endif %} style="opacity: 0;"></span></div>
+                {% trans 'Manual activation' %}
+            </label>
+            
+            </div>
+          </div>
+          
+          <div class="control-group">
+           <label class="control-label">{% trans 'Icon' %}</label>
+            <div class="controls">
+            
+            <input type="text" name="icon_url" value="{{product.icon_url}}" placeholder=""/>
+            
+            </div>
+          </div>
+          
+          <div class="control-group">
+           <label class="control-label">{% trans 'Title' %}</label>
+            <div class="controls">
+            
+            <input type="text" name="title" value="{{product.title}}" required="required" placeholder=""/>
+            
+            </div>
+          </div>
+          
+          <div class="control-group">
+           <label class="control-label">{% trans 'Description' %}</label>
+            <div class="controls">
+            
+            <textarea name="description" cols="5" rows="5" class="span12 m-wrap">{{product.description}}</textarea>
+            
+            </div>
+          </div>
+
+
+        {% include "partial_pricing.phtml" with {'product': product} %}
+
+        <div class="form-actions">
+               <input type="submit" value="{% trans 'Update' %}" class="btn blue">
+        </div>
+
+    <input type="hidden" name="id" value="{{ product.id }}" />
+</form>
+</div>
+
+							</div>
+						</div>
+						<!-- END CONDENSED TABLE PORTLET-->
+					</div>
+					
+</div>
+
+{% endblock %}

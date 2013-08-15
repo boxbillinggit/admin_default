@@ -1,0 +1,143 @@
+{% extends "layout_default.phtml" %}
+{% set active_menu = 'products' %}
+{% block meta_title %}{% trans 'Addons' %}{% endblock %}
+
+{% block breadcrumbs %}
+			<ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="{{ '/'|alink }}">{% trans 'Home' %}</a> 
+								<span class="icon-angle-right"></span>
+							</li>
+                             <li><a href="{{ 'product'|alink }}">{% trans 'Products' %}</a>
+                             <span class="icon-angle-right"></span></li>
+							<li>{% trans 'Addons' %}</li>
+						</ul>
+{% endblock %}
+
+{% block content %}
+
+<div style="padding-top:20px;"></div>
+<div class="tabbable tabbable-custom">
+											<ul class="nav nav-tabs">
+                                                <li class="active"><a href="#tab_index" data-toggle="tab">{% trans 'Addons' %}</a></li>
+                                                <li><a href="#tab_new" data-toggle="tab">{% trans 'New Addon' %}</a></li>
+											</ul>
+											<div class="tab-content">
+												<div class="tab-pane active" id="tab_index">
+
+            <table class="tableStatic wide">
+                <tbody>
+                    {% for addon_id, addon_title in admin.product_addon_get_pairs %}
+                    <tr {% if loop.first %}class="noborder"{% endif %}>
+                        <td><label for="addon_{{ addon_id }}">{{addon_title}}</label></td>
+                        <td class="actions" style="width:13%">
+                            <a class="bb-button btn14" href="{{ '/product/addon'|alink }}/{{addon_id}}"><img src="images/icons/dark/pencil.png" alt=""></a>
+                            <a class="bb-button btn14 bb-rm-tr api-link" data-api-confirm="Are you sure?" data-api-redirect="product/addons" href="admin/product/delete?id={{addon_id}}"><img src="images/icons/dark/trash.png" alt=""></a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2">{% trans 'The list is empty' %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="fix"></div>
+        </div>
+        
+        <div class="fix"></div>
+
+        <div class="tab-pane" id="tab_new">
+            
+            <form method="post" action="admin/product/addon_create" class="form-horizontal api-form save" data-api-jsonp="onAfterAddonCreate">
+           
+           <div class="control-group">
+           <label class="control-label">{% trans 'Status' %}</label>
+            <div class="controls">
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="status" value="enabled" style="opacity: 0;"></span></div>
+                {% trans 'Enabled' %}
+            </label>
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="status" value="disabled" checked="checked" style="opacity: 0;"></span></div>
+                {% trans 'Disabled' %}
+            </label>
+            
+            </div>
+          </div>
+          
+          <div class="control-group">
+           <label class="control-label">{% trans 'Activation' %}</label>
+            <div class="controls">
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="setup" value="after_order" style="opacity: 0;"></span></div>
+                {% trans 'After order is placed' %}
+            </label>
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="setup" value="after_payment" checked="checked" style="opacity: 0;"></span></div>
+                {% trans 'After payment is received' %}
+            </label>
+            
+            <label class="radio">
+              <div class="radio" id="uniform-undefined"><span><input type="radio" name="setup" value="manual" style="opacity: 0;"></span></div>
+                {% trans 'Manual activation' %}
+            </label>
+            
+            </div>
+          </div>
+          
+          <div class="control-group">
+           <label class="control-label">{% trans 'Icon' %}</label>
+            <div class="controls">
+            
+            <input type="text" name="icon_url" value="{{product.icon_url}}" placeholder=""/>
+            
+            </div>
+          </div>
+
+		  <div class="control-group">
+           <label class="control-label">{% trans 'Title' %}</label>
+            <div class="controls">
+            
+            <input type="text" name="title" value="{{product.title}}" required="required" placeholder=""/>
+            
+            </div>
+          </div>
+          
+          <div class="control-group">
+           <label class="control-label">{% trans 'Description' %}</label>
+            <div class="controls">
+            
+            <textarea name="description" cols="5" rows="5" class="span12 m-wrap">{{product.description}}</textarea>
+            
+            </div>
+          </div>
+
+		  <div class="form-actions">
+               <input type="submit" value="{% trans 'Create' %}" class="btn blue">
+          </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    
+    function onAfterAddonCreate(result)
+    {
+        bb.redirect('product/addon/' + result);
+    }
+    
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+<ul  style="border:none !important;">
+	<li>
+					<a href="/bb-admin.php/index">
+					<i class="icon-home"></i> Dashboard
+					<span class="selected"></span>
+					</a>					
+				</li>
+
+				
+{% set navigation = admin.extension_get_navigation({"url":guest.system_current_url}) %}
+{% for location,group in navigation %}
+    {% if group.subpages %}
+
+				<li class="has-sub {% if group.active or active_menu == location %} active{% endif %}" data-nav-index="{{ group.index }}" data-nav-location="{{location}}" >
+					<a href="javascript:;" class="">
+					<i class="icon-table"></i> {{ group.label|trans }}
+					<span class="arrow"></span>
+					</a>
+					<ul class="sub" style="border:none !important;">
+					{% for subpage in group.subpages %}
+	<li class="{% if subpage.active %} active{% endif %}" data-nav-index="{{ subpage.index }}" style="border:none !important;"><a class="{{ subpage.class }}" href="{{ subpage.uri|alink }}">{{ subpage.label|trans }}</a></li>
+					{% endfor %}
+					</ul>
+				</li>
+	
+    {% endif %}
+{% endfor %}
+</ul>

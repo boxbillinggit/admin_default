@@ -1,0 +1,98 @@
+{% extends request.ajax ? "layout_blank.phtml" : "layout_default.phtml" %}
+{% set active_menu = 'order' %}
+{% import "macro_functions.phtml" as mf %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="{{ '/'|alink }}">{% trans 'Home' %}</a> 
+								<span class="icon-angle-right"></span>
+							</li>
+                             <li><a href="{{ 'order'|alink }}">{% trans 'Orders' %}</a>
+                             <span class="icon-angle-right"></span></li>
+							<li>{% trans 'Create new order' %}</li>
+						</ul>
+{% endblock %}
+
+{% block meta_title %}{% trans 'Create new order' %}{% endblock %}
+
+{% block content %}
+{% set product = admin.product_get({"id":request.product_id}) %}
+{% set client = admin.client_get({"id":request.client_id}) %}
+
+<div class="row-fluid">
+					<div class="span12">
+						<div class="portlet box yellow">
+							<div class="portlet-title">
+								<h4><i class="icon-cogs"></i>{% trans 'Create new order' %}</h4>
+								<div class="tools">
+									<a href="javascript:;" class="collapse"></a>
+								</div>
+							</div>
+							<div class="portlet-body">
+
+            <div class="help">
+                <h2>"{{ product.title }}" {% trans 'for' %} {{ client.first_name }} {{ client.last_name }}</h2>
+            </div>
+    <form method="get" action="admin/order/create" class="mainForm api-form form-horizontal" data-api-jsonp="onAfterOrderPlaced">
+        
+        <div class="control-group rowElem">
+           <label class="control-label">{% trans 'Invoice option' %}</label>
+           <div class="controls">
+              {{ mf.selectbox('invoice_option', admin.order_get_invoice_options, order.invoice_option) }}
+           </div>
+        </div>
+        
+        
+        <div class="control-group rowElem">
+           <label class="control-label">{% trans 'Activate order' %}:</label>
+           <div class="controls">
+            <label class="radio line">
+            <div class="radio" id="uniform-undefined">
+            <span><input type="radio" name="activate" value="1" style="opacity: 0;"  checked="checked"></span></div>
+            Yes</label>
+            <label class="radio line">
+            <div class="radio" id="uniform-undefined">
+            <span class="checked"><input type="radio" name="activate" value="0" checked="" style="opacity: 0;"></span></div>
+            No</label>   
+         </div>
+        </div>
+        
+        {% if product.pricing.type == 'recurrent' %}
+        <div class="control-group rowElem">
+           <label class="control-label">{% trans 'Period' %}</label>
+           <div class="controls">
+              {{ mf.selectbox('period', guest.system_periods, request.period, 1) }}
+           </div>
+        </div>
+        {% endif %}
+
+            
+            
+            {% set product_order = 'mod_service'~product.type~'_order.phtml' %}
+            {% if admin.system_template_exists({"file":product_order}) %}
+                {% include product_order %}
+            {% endif %}
+            
+            <input type="submit" value="{% trans 'Place new order' %}" class="btn blue" />
+            <input type="hidden" name="client_id" value="{{ request.client_id }}" />
+            <input type="hidden" name="product_id" value="{{ request.product_id }}" />
+        </fieldset>
+    </form>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block js%}
+<script type="text/javascript">
+
+    function onAfterOrderPlaced(id) {
+        bb.redirect("order/manage/"+id);
+    }
+    
+</script>
+{% endblock %}

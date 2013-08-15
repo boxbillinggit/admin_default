@@ -1,0 +1,299 @@
+{% import "macro_functions.phtml" as mf %}
+{% set profile = admin.profile_get %}
+{% set company = guest.system_company %}
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<!-- BEGIN HEAD --><head>
+	<meta charset="utf-8" />
+	<title>{% block meta_title %}{% endblock %} - {{ company.name }}</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	
+	{% include "partial_bb_meta.phtml" %}
+    
+    {% include "partial_styles.phtml" %}
+    
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="assets/css/metro.css" rel="stylesheet" />
+	<link href="assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
+	<link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+	<link href="assets/css/style.css" rel="stylesheet" />
+	<link href="assets/css/style_responsive.css" rel="stylesheet" />
+	<link href="assets/css/style_default.css" rel="stylesheet" id="style_color" />
+	<link href="assets/fancybox/source/jquery.fancybox.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="assets/uniform/css/uniform.default.css" />
+	<link rel="stylesheet" type="text/css" href="assets/chosen-bootstrap/chosen/chosen.css" />
+	<link rel="stylesheet" href="assets/data-tables/DT_bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="assets/uniform/css/uniform.default.css" />
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap-datepicker/css/datepicker.css" />
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap-timepicker/compiled/timepicker.css" />
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap-colorpicker/css/colorpicker.css" />
+    <link rel="stylesheet" href="assets/bootstrap-toggle-buttons/static/stylesheets/bootstrap-toggle-buttons.css" />
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap-daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
+   
+	<link rel="shortcut icon" href="favicon.ico" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+   
+    <script type="text/javascript" src="js/jquery.min.js?v={{guest.system_version}}"></script>
+    <script type="text/javascript" src="js/ui/jquery.alerts.js?v={{guest.system_version}}"></script>
+    <script type="text/javascript" src="js/ui/jquery.tipsy.js?v={{guest.system_version}}"></script>
+    <script type="text/javascript" src="js/jquery.collapsible.min.js?v={{guest.system_version}}"></script>
+    <script type="text/javascript" src="js/forms/forms.js?v={{guest.system_version}}"></script>
+    <script type="text/javascript" src="js/jquery.ToTop.js?v={{guest.system_version}}"></script>
+    <script type="text/javascript" src="js/jquery.scrollTo-min.js?v={{guest.system_version}}"></script>
+    <script type="text/javascript" src="js/jquery-ui.js?v={{guest.system_version}}"></script>
+    <script type="text/javascript" src="js/bb-admin.js?v={{guest.system_version}}"></script>    
+	    
+    {% block head %}{% endblock %}
+
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="fixed-top">
+	<!-- BEGIN HEADER -->
+	<div class="header navbar navbar-inverse navbar-fixed-top">
+		<!-- BEGIN TOP NAVIGATION BAR -->
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<!-- BEGIN LOGO -->
+				<a class="brand" href="{{ 'system'|alink }}">
+				<img src="{{ company.logo_url }}" alt="logo" style="max-height:30px;" />
+				</a>
+				<!-- END LOGO -->
+				<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+				<a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+				<img src="assets/img/menu-toggler.png" alt="" />
+				</a>          
+				<!-- END RESPONSIVE MENU TOGGLER -->				
+				<!-- BEGIN TOP NAVIGATION MENU -->					
+				<ul class="nav pull-right">
+					<!-- BEGIN TODO DROPDOWN -->
+                    <li class="loading" style="display:none;  padding-top:10px; opacity: 0.7;" id="header_task_bar"><img src="images/loader.gif" alt="" /><span style="color:white;">Loading ...</span></li>
+					<li class="dropdown" id="header_task_bar">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-plus"></i>
+						{% trans 'New' %}
+						</a>
+						<ul class="dropdown-menu extended tasks">
+							{% include "partial_menu_top.phtml" %}
+						</ul>
+					</li>
+					
+					{% if admin.system_is_allowed({"mod":"system"}) %}
+					<li class="dropdown" id="header_task_bar">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-tasks"></i>
+						{% trans 'Settings' %}
+						</a>
+						<ul class="dropdown-menu extended tasks">
+							<li><a href="{{ 'system'|alink }}" title="">{% trans 'All settings' %}</a></li>
+                            <li><a href="{{ 'theme'|alink }}/{{ guest.extension_theme.code }}" title="">{% trans 'Theme settings' %}</a></li>
+						</ul>
+					</li>
+					{% endif %}
+					
+					<li class="dropdown" id="header_task_bar">
+						<a href="{{ '/'|link }}" class="dropdown-toggle">
+						<i class="icon-plus"></i>
+						{% trans 'Visit site' %}
+						</a>
+					</li>
+					<!-- END TODO DROPDOWN -->
+					<!-- BEGIN USER LOGIN DROPDOWN -->
+					<li class="dropdown user">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<img alt="{{ profile.name }}" src="{{ profile.email|gravatar }}?size=30" />
+						<span class="username">{% trans 'Hi,' %} {{ profile.name }}!</span>
+						<i class="icon-angle-down"></i>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="{{ 'staff/profile'|alink }}"><i class="icon-user"></i> Mój Profil</a></li>
+							<li><a href="admin/profile/logout" class="api-link" data-api-redirect="staff/login"><i class="icon-key"></i> {% trans 'Logout' %}</a></li>
+						</ul>
+					</li>
+					<!-- END USER LOGIN DROPDOWN -->
+				</ul>
+				<!-- END TOP NAVIGATION MENU -->	
+			</div>
+		</div>
+		<!-- END TOP NAVIGATION BAR -->
+	</div>
+	<!-- END HEADER -->
+	<!-- BEGIN CONTAINER -->
+	<div class="page-container row-fluid">
+		<!-- BEGIN SIDEBAR -->
+		<div class="page-sidebar nav-collapse collapse">
+			<div class="slide hide">
+				<i class="icon-angle-left"></i>
+			</div>
+			
+			
+			
+	{% block left_top %}{% endblock %}    
+    {% block nav %}{% include "partial_menu.phtml" %}{% endblock %}
+    {% block left_bottom %}{% endblock %}
+
+		</div>
+		<!-- END SIDEBAR -->
+		<!-- BEGIN PAGE -->
+		<div class="page-content">
+			<!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+
+				<!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid">
+					<div class="span12">
+						{% block before_content %}{% endblock %}  	
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->		
+						<h3 class="page-title">
+							{{ block('meta_title') }}
+						</h3>
+						
+						{% block breadcrumbs %}
+						<ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="{{ '/'|alink }}">{% trans 'Home' %}</a> 
+								<span class="icon-angle-right"></span>
+							</li>
+							<li><a href="#">{{ block('meta_title') }}</a></li>
+						</ul>
+						{% endblock %}
+						
+						<!-- END PAGE TITLE & BREADCRUMB-->
+					</div>
+				</div>
+				
+				
+				
+				
+				<div class="row-fluid">
+    <div class="span12">
+	<center>
+            {% if admin.system_is_allowed({"mod":"notification"}) and guest.extension_is_on({"mod":"notification"}) %}
+            {% set count_notifications = admin.notification_get_list({"per_page":1}).total %}
+			<a href="{{ 'notification'|alink }}" class="icon-btn span2">
+										<i class="icon-bullhorn"></i>
+										<div>{% trans 'Powiadomienia' %}</div>
+										{% if count_notifications %}<span class="badge badge-important">{{ count_notifications }}</span>{% endif %}
+									</a>
+            {% endif %}
+            
+            {% if admin.system_is_allowed({"mod":"order"}) %}
+            {% set count_orders = admin.order_get_statuses.failed_setup %}
+			<a href="{{ 'order'|alink }}?status=failed_setup" class="icon-btn span3">
+										<i class="icon-barcode"></i>
+										<div>{% trans 'Zamówienia' %}</div>
+										{% if count_orders %}<span class="badge badge-success">{{ count_orders }}</span>{% endif %}
+									</a>
+            {% endif %}
+            
+            {% if admin.system_is_allowed({"mod":"invoice"}) %}
+            {% set count_invoices = admin.invoice_get_statuses.unpaid %}
+			<a href="{{ 'invoice'|alink }}?status=unpaid" class="icon-btn span2">
+										<i class="icon-money"></i>
+										<div>{% trans 'Faktury' %}</div>
+										{% if count_invoices %}<span class="badge badge-important">{{ count_invoices }}</span>{% endif %}
+									</a>
+            {% endif %}
+            
+            {% if admin.system_is_allowed({"mod":"support"}) %}
+            {% set count_tickets = admin.support_ticket_get_statuses.open %}
+            {% set count_ptickets = admin.support_public_ticket_get_statuses.open %}
+			<a href="{{ 'support/public-tickets'|alink }}?status=open" class="icon-btn span2">
+										<i class="icon-envelope"></i>
+										<div>{% trans 'Publicznych Tiecketów' %}</div>
+										{% if count_ptickets %}<span class="badge badge-info">{{ count_ptickets }}</span>{% endif %}
+									</a>
+			
+			<a href="{{ 'support'|alink }}?status=open" class="icon-btn span2">
+										<i class="icon-envelope"></i>
+										<div>{% trans 'Pomoc Techniczna' %}</div>
+										{% if count_tickets %}<span class="badge badge-info">{{ count_tickets }}</span>{% endif %}
+									</a>
+            {% endif %}
+            
+            {% if admin.system_is_allowed({"mod":"client"}) %}
+			<a href="{{ 'client'|alink }}" class="icon-btn span3">
+										<i class="icon-group"></i>
+										<div>{% trans 'Klienci' %}</div>
+									</a>
+            {% endif %}
+		</center>
+      </div>      
+</div>
+				
+				
+				
+				
+				
+				
+				<!-- END PAGE HEADER-->
+				<div id="dashboard">
+				
+				{% block top_content %}{% endblock %}
+				{% block content %}{% endblock %}
+				
+				</div>
+			</div>
+			<!-- END PAGE CONTAINER-->		
+		</div>
+		<!-- END PAGE -->
+	</div>
+	<!-- END CONTAINER -->
+	<!-- BEGIN FOOTER -->
+	<div class="footer">
+		2013 &copy; BoxBilling.com.pl.
+		<div class="span pull-right">
+			<span class="go-top"><i class="icon-angle-up"></i></span>
+		</div>
+	</div>
+	<!-- END FOOTER -->
+	<!-- BEGIN JAVASCRIPTS -->
+	<!-- Load javascripts at bottom, this will reduce page load time -->  
+    <div class="loading dim"></div>    
+    {% block js %}{% endblock %}
+		
+	<!--[if lt IE 9]>
+	<script src="assets/js/excanvas.js"></script>
+	<script src="assets/js/respond.js"></script>	
+	<![endif]-->	
+	<script src="assets/breakpoints/breakpoints.js"></script>		
+	<script src="assets/jquery-slimscroll/jquery-ui-1.9.2.custom.min.js"></script>	
+	<script src="assets/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/js/jquery.blockui.js"></script>	
+	<script src="assets/js/jquery.cookie.js"></script>	
+    <script type="text/javascript" src="assets/ckeditor/ckeditor.js"></script>  
+
+	<script type="text/javascript" src="assets/gritter/js/jquery.gritter.js"></script>
+	<script type="text/javascript" src="assets/uniform/jquery.uniform.min.js"></script>	
+	<script type="text/javascript" src="assets/js/jquery.pulsate.min.js"></script>
+   <script type="text/javascript" src="assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+   <script type="text/javascript" src="assets/clockface/js/clockface.js"></script>
+   <script type="text/javascript" src="assets/bootstrap-daterangepicker/date.js"></script>
+   <script type="text/javascript" src="assets/bootstrap-daterangepicker/daterangepicker.js"></script> 
+   <script type="text/javascript" src="assets/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>  
+   <script type="text/javascript" src="assets/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+   <script type="text/javascript" src="assets/bootstrap-wysihtml5/wysihtml5-0.3.0.js"></script> 
+   <script type="text/javascript" src="assets/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
+
+
+	<script src="assets/js/app.js"></script>	
+    
+     	
+	<script>
+		jQuery(document).ready(function() {			
+			// initiate layout and plugins
+			App.init();
+		});
+	</script>
+
+	<!-- END JAVASCRIPTS -->
+
+</body>
+<!-- END BODY -->
+</html>

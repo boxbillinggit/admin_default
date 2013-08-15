@@ -1,0 +1,29 @@
+{% extends "layout_default.phtml" %}
+{% block meta_title %}{% trans 'Error' %} {{ exception.getCode  }}{% endblock %}
+{% set help_query = exception.getMessage %}
+
+{% block content %}
+
+<div class="row-fluid">
+					<div class="span12">
+						<div class="row-fluid page-{% if exception.getCode == 0%}500{% else %}{{ exception.getCode }} {% endif %}">
+							<div class="span5 number">
+								{% if exception.getCode == 0%}500{% else %} {{ exception.getCode }} {% endif %}
+							</div>
+							<div class="span7 details">
+								<h3>{% trans 'Something went wrong here' %}</h3>
+								<p>
+									{{ exception.getMessage }}!<br>
+		{% if exception.getCode == 403 %}
+        <div class="backToDash"><a href="{{ '/staff/login'|alink }}" title="" class="btn blue">{% trans 'Login' %}</a></div>
+        {% else %}
+        <div class="backToDash"><a href="{{ '/index'|alink }}" title="" class="btn blue">{% trans 'Back to Dashboard' %}</a></div>
+        {% endif %}
+								</p>
+							
+							</div>
+						</div>
+					</div>
+				</div>
+
+{% endblock %}
